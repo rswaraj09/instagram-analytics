@@ -51,8 +51,10 @@ public class PostService {
         }
 
         // Check if post already exists
-        if (postRepository.existsByPostUrl(postUrl)) {
-            throw new IllegalArgumentException("Post URL already exists: " + postUrl);
+        Optional<InstagramPost> existingPost = postRepository.findByPostUrl(postUrl);
+        if (existingPost.isPresent()) {
+            log.info("Post already exists, returning existing post: {}", postUrl);
+            return existingPost.get();
         }
 
         // Extract shortcode from URL
