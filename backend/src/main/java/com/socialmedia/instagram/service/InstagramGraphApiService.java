@@ -71,9 +71,9 @@ public class InstagramGraphApiService implements GraphApiService {
             if ("REELS".equalsIgnoreCase(mediaProductType)) {
                 metricsParam = "reach,views,saved";
             } else if ("VIDEO".equalsIgnoreCase(mediaType)) {
-                metricsParam = "impressions,reach,saved,views";
+                metricsParam = "reach,saved,views";
             } else {
-                metricsParam = "impressions,reach,saved";
+                metricsParam = "reach,saved";
             }
 
             String url = String.format("%s/%s/insights?metric=%s&access_token=%s",

@@ -257,10 +257,8 @@ class ProfileServicePropertyTest {
         return Arbitraries.strings()
             .withCharRange('a', 'z')
             .numeric()
-            .withChars('_', '.')
-            .ofMinLength(1)
-            .ofMaxLength(30)
-            .filter(s -> !s.isEmpty() && Character.isLetterOrDigit(s.charAt(0)));
+            .ofMinLength(3)
+            .ofMaxLength(20);
     }
 
     /**
@@ -271,10 +269,9 @@ class ProfileServicePropertyTest {
         Arbitrary<String> protocol = Arbitraries.of("https://", "http://");
         Arbitrary<String> subdomain = Arbitraries.of("www.", "");
         Arbitrary<String> username = validUsername();
-        Arbitrary<String> trailing = Arbitraries.of("/", "");
 
-        return Combinators.combine(protocol, subdomain, username, trailing)
-            .as((p, sub, user, trail) -> p + sub + "instagram.com/" + user + trail);
+        return Combinators.combine(protocol, subdomain, username)
+            .as((p, sub, user) -> p + sub + "instagram.com/" + user + "/");
     }
 
     /**

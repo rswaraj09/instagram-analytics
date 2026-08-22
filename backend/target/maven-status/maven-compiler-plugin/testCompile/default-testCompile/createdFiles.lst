@@ -1,0 +1,3 @@
+com\socialmedia\instagram\service\ProfileServicePropertyTest.class
+com\socialmedia\instagram\security\JwtTokenProviderPropertyTest.class
+com\socialmedia\instagram\entity\UserPropertyTest.class

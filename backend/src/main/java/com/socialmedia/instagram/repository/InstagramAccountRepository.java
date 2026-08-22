@@ -11,6 +11,10 @@ import java.util.UUID;
 @Repository
 public interface InstagramAccountRepository extends JpaRepository<InstagramAccount, UUID> {
 
+    List<InstagramAccount> findByUserId(UUID userId);
+
+    List<InstagramAccount> findByUser_Id(UUID userId);
+
     List<InstagramAccount> findByUser_IdOrderByCreatedAtDesc(UUID userId);
 
     Optional<InstagramAccount> findByIdAndUser_Id(UUID id, UUID userId);

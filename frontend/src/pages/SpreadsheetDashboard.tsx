@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AgGridReact } from 'ag-grid-react';
 import {
   AllCommunityModule,
@@ -101,6 +102,7 @@ const fromPayload = (p: SpreadsheetRowPayload): RowData => ({
 });
 
 const SpreadsheetDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [rowData, setRowData] = useState<RowData[]>([createEmptyRow()]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [cooldown, setCooldown] = useState(0);
@@ -494,8 +496,14 @@ const SpreadsheetDashboard: React.FC = () => {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
-              Instagram Analytics Dashboard
+              Interactive Spreadsheet
             </h2>
+            <button 
+              onClick={() => navigate('/app/analytics')}
+              className="ml-3 px-3 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-sm transition-all hover:scale-105"
+            >
+              📊 Go to Reel & Post Analytics
+            </button>
             <span
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border"
               style={

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dd375e57-4a2f-497b-80e0-902f2f1597d8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/InstagramAnalyticsApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/InstagramAnalyticsApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/AsyncConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/AsyncConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/DataSeeder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/DataSeeder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/RestClientConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/RestClientConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/WebSocketConfig$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/WebSocketConfig$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/WebSocketConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/config/WebSocketConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$ErrorResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$ErrorResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$LoginRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$LoginRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$LogoutRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$LogoutRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$RefreshRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$RefreshRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$RegisterRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController$RegisterRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ExportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ExportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/InstagramAccountController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/InstagramAccountController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$CreateProfileRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$CreateProfileRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$FetchProfileRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$FetchProfileRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$UpdateProfileRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController$UpdateProfileRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/ProfileController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/SpreadsheetController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/controller/SpreadsheetController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/CreateInstagramAccountRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/CreateInstagramAccountRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/InstagramAccountResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/InstagramAccountResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/PostInsights$PostInsightsBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/PostInsights$PostInsightsBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/PostInsights.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/PostInsights.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/ProfileInfo$ProfileInfoBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/ProfileInfo$ProfileInfoBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/ProfileInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/ProfileInfo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetRowDTO$SpreadsheetRowDTOBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetRowDTO$SpreadsheetRowDTOBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetRowDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetRowDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetUpdate$SpreadsheetUpdateBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetUpdate$SpreadsheetUpdateBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetUpdate.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/SpreadsheetUpdate.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/TokenValidation$TokenValidationBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/TokenValidation$TokenValidationBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/TokenValidation.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/TokenValidation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/UpdateInstagramAccountRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/dto/UpdateInstagramAccountRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramAccount$InstagramAccountBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramAccount$InstagramAccountBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramAccount.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramAccount.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramPost$InstagramPostBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramPost$InstagramPostBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramPost.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramPost.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramProfile$InstagramProfileBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramProfile$InstagramProfileBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramProfile.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/InstagramProfile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/MonitoringStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/MonitoringStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostMetrics$PostMetricsBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostMetrics$PostMetricsBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostMetrics.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostMetrics.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostType.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/PostType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/RefreshToken$RefreshTokenBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/RefreshToken$RefreshTokenBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/RefreshToken.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/RefreshToken.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/SpreadsheetRow$SpreadsheetRowBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/SpreadsheetRow$SpreadsheetRowBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/SpreadsheetRow.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/SpreadsheetRow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User$UserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User$UserRole.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User$UserRole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/ForbiddenException.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/ForbiddenException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler$ErrorResponse$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler$ErrorResponse$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler$ErrorResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler$ErrorResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/exception/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramAccountRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramAccountRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramPostRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramPostRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramProfileRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/InstagramProfileRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/PostMetricsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/PostMetricsRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/RefreshTokenRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/RefreshTokenRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/SpreadsheetRowRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/SpreadsheetRowRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/JwtAuthenticationFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/JwtAuthenticationFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/JwtTokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/JwtTokenProvider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/OAuth2SuccessHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/OAuth2SuccessHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/RateLimitFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/RateLimitFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/TokenBlacklistService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/security/TokenBlacklistService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthResponse$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthResponse$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthenticationException.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$AuthenticationException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RefreshResponse$Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RefreshResponse$Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RefreshResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RefreshResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RegistrationInstagramCredentials.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService$RegistrationInstagramCredentials.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/AuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/CredentialEncryptionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/CredentialEncryptionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/ExportService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/ExportService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/GraphApiException.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/GraphApiException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/GraphApiService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/GraphApiService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramAccountService$DecryptedCredentials.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramAccountService$DecryptedCredentials.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramAccountService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramAccountService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramGraphApiService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/InstagramGraphApiService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/MetricsCollectionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/MetricsCollectionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/ProfileService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/ProfileService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/SpreadsheetRowService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/SpreadsheetRowService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/WebSocketMetricsPublisher.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/WebSocketMetricsPublisher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/WebSocketMetricsPublisherImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/socialmedia/instagram/service/WebSocketMetricsPublisherImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/com/socialmedia/instagram/entity/UserPropertyTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/test-classes/com/socialmedia/instagram/entity/UserPropertyTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/com/socialmedia/instagram/security/JwtTokenProviderPropertyTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/test-classes/com/socialmedia/instagram/security/JwtTokenProviderPropertyTest.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="3FR96of1hm8C6ArXDtEkqWDhzuu" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/project/media RD/instagram-analytics"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dd375e57-4a2f-497b-80e0-902f2f1597d8" name="Changes" comment="" />
+      <created>1782026842867</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782026842867</updated>
+    </task>
+    <servers />
+  </component>
+</project>

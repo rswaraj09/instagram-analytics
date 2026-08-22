@@ -1,5 +1,77 @@
 const BASE_URL = 'http://localhost:8080/api';
 
+// ===== Analytics Types =====
+
+export interface MediaItem {
+  id: string;
+  shortcode: string | null;
+  mediaType: string;
+  mediaProductType: string;
+  caption: string | null;
+  mediaUrl: string | null;
+  thumbnailUrl: string | null;
+  permalink: string | null;
+  timestamp: string | null;
+  duration: number | null;
+  likeCount: number | null;
+  commentsCount: number | null;
+  reach: number | null;
+  impressions: number | null;
+  saved: number | null;
+  videoViews: number | null;
+  shares: number | null;
+  profileVisits: number | null;
+  follows: number | null;
+  clicks: number | null;
+  plays: number | null;
+  totalInteractions: number | null;
+  videoViewTotalTime: number | null;
+  avgWatchTime: number | null;
+  engagementRate: number | null;
+}
+
+export interface DailySnapshot {
+  date: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  saves: number;
+  reach: number;
+  impressions: number;
+  engagementRate: number;
+}
+
+export interface DashboardSummary {
+  totalPosts: number;
+  totalReels: number;
+  totalVideos: number;
+  totalImages: number;
+  totalViews: number;
+  totalLikes: number;
+  totalComments: number;
+  totalShares: number;
+  totalSaves: number;
+  totalReach: number;
+  totalImpressions: number;
+  averageEngagementRate: number;
+  bestPerformingReel: MediaItem | null;
+  bestPerformingPost: MediaItem | null;
+  fastestGrowingContent: MediaItem | null;
+  mostSharedContent: MediaItem | null;
+  mostSavedContent: MediaItem | null;
+  dailySnapshots: DailySnapshot[];
+  lastSyncedAt: string;
+}
+
+export interface MediaPage {
+  content: MediaItem[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
 /** Subset of a spreadsheet row that the export endpoints accept. */
 export interface ExportableRow {
   profileUrl: string;
@@ -302,3 +374,68 @@ export const deleteAllSpreadsheetRows = async (token: string): Promise<void> => 
     throw new Error('Failed to delete all rows');
   }
 };
+
+// ===== New Analytics Dashboard APIs =====
+
+export interface MediaQueryParams {
+  accountId?: string;
+  limit?: number;
+  type?: string;
+  search?: string;
+  sortBy?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: number;
+  size?: number;
+}
+
+export const getAllMedia = async (token: string, params: MediaQueryParams = {}): Promise<MediaPage> => {
+  const qs = new URLSearchParams();
+  if (params.accountId) qs.set('accountId', params.accountId);
+  if (params.limit) qs.set('limit', String(params.limit));
+  if (params.type) qs.set('type', params.type);
+  if (params.search) qs.set('search', params.search);
+  if (params.sortBy) qs.set('sortBy', params.sortBy);
+  if (params.dateFrom) qs.set('dateFrom', params.dateFrom);
+  if (params.dateTo) qs.set('dateTo', params.dateTo);
+  if (params.page !== undefined) qs.set('page', String(params.page));
+  if (params.size) qs.set('size', String(params.size));
+  const response = await fetch(`${BASE_URL}/analytics/media?${qs.toString()}`, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  return jsonOrThrow(response, 'Failed to fetch media');
+};
+
+export const getDashboardSummary = async (token: string, accountId?: string): Promise<DashboardSummary> => {
+  const qs = accountId ? `?accountId=${accountId}&limit=200` : '?limit=200';
+  const response = await fetch(`${BASE_URL}/analytics/summary${qs}`, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  return jsonOrThrow(response, 'Failed to fetch dashboard summary');
+};
+
+export const compareMedia = async (token: string, ids: string[], accountId?: string): Promise<MediaItem[]> => {
+  const qs = accountId ? `?accountId=${accountId}` : '';
+  const response = await fetch(`${BASE_URL}/analytics/compare${qs}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ ids }),
+  });
+  return jsonOrThrow(response, 'Failed to compare media');
+};
+
+export const exportAnalyticsCsv = async (token: string, accountId?: string): Promise<Blob> => {
+  const qs = accountId ? `?accountId=${accountId}&limit=500` : '?limit=500';
+  const response = await fetch(`${BASE_URL}/analytics/export/csv${qs}`, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!response.ok) {
+    if (response.status === 401) throw new Error('Your session has expired.');
+    throw new Error('CSV export failed');
+  }
+  return response.blob();
+};
+
