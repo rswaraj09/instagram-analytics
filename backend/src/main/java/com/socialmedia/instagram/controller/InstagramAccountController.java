@@ -1,8 +1,6 @@
 package com.socialmedia.instagram.controller;
 
-import com.socialmedia.instagram.dto.CreateInstagramAccountRequest;
-import com.socialmedia.instagram.dto.InstagramAccountResponse;
-import com.socialmedia.instagram.dto.UpdateInstagramAccountRequest;
+import com.socialmedia.instagram.dto.*;
 import com.socialmedia.instagram.service.InstagramAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * REST controller for managing a user's Instagram accounts (Issue 5/9).
- * All endpoints are user-scoped via the authenticated principal.
+ * REST controller for managing multi-Instagram account lifecycle, switching, combined analytics, and comparison.
  */
 @RestController
 @RequestMapping("/api/accounts")
@@ -47,6 +44,21 @@ public class InstagramAccountController {
         return ResponseEntity.ok(accountService.listAccounts(userId));
     }
 
+    @GetMapping("/combined")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CombinedAnalyticsResponse> getCombinedAnalytics(@AuthenticationPrincipal UUID userId) {
+        return ResponseEntity.ok(accountService.getCombinedAnalytics(userId));
+    }
+
+    @GetMapping("/compare")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<AccountComparisonResponse> compareAccounts(
+        @AuthenticationPrincipal UUID userId,
+        @RequestParam(required = false) List<UUID> accountIds
+    ) {
+        return ResponseEntity.ok(accountService.compareAccounts(userId, accountIds));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> get(@AuthenticationPrincipal UUID userId, @PathVariable UUID id) {
@@ -63,6 +75,48 @@ public class InstagramAccountController {
                                     @Valid @RequestBody UpdateInstagramAccountRequest request) {
         try {
             return ResponseEntity.ok(accountService.updateAccount(userId, id, request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/disconnect")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> disconnect(@AuthenticationPrincipal UUID userId, @PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(accountService.disconnectAccount(userId, id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/label")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> renameLabel(@AuthenticationPrincipal UUID userId, @PathVariable UUID id,
+                                         @RequestBody Map<String, String> body) {
+        try {
+            String newLabel = body.get("label");
+            return ResponseEntity.ok(accountService.renameAccountLabel(userId, id, newLabel));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/set-default")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> setDefault(@AuthenticationPrincipal UUID userId, @PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(accountService.setDefaultAccount(userId, id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/sync")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> syncData(@AuthenticationPrincipal UUID userId, @PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(accountService.syncAccountData(userId, id));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

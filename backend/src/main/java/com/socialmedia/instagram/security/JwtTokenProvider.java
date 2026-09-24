@@ -47,16 +47,16 @@ public class JwtTokenProvider {
         Instant now = Instant.now();
         Instant expiryDate = now.plusMillis(accessTokenExpiration);
         return Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setSubject(userId.toString())
-                .setIssuer(issuer)
-                .setAudience(audience)
+                .id(UUID.randomUUID().toString())
+                .subject(userId.toString())
+                .issuer(issuer)
+                .audience().add(audience).and()
                 .claim("email", email)
                 .claim("role", role)
                 .claim("type", "access")
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(expiryDate))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiryDate))
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -64,14 +64,14 @@ public class JwtTokenProvider {
         Instant now = Instant.now();
         Instant expiryDate = now.plusMillis(refreshTokenExpiration);
         return Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setSubject(userId.toString())
-                .setIssuer(issuer)
-                .setAudience(audience)
+                .id(UUID.randomUUID().toString())
+                .subject(userId.toString())
+                .issuer(issuer)
+                .audience().add(audience).and()
                 .claim("type", "refresh")
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(expiryDate))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiryDate))
+                .signWith(secretKey)
                 .compact();
     }
 

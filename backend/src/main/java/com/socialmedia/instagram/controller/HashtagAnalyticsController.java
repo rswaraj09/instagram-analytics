@@ -100,6 +100,7 @@ public class HashtagAnalyticsController {
         }
     }
 
+    @lombok.Getter
     private static class HashtagStat {
         public String hashtag;
         public int count = 0;

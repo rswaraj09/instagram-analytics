@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * An Instagram (Graph API) account owned by a user. App secret and access token
- * are stored encrypted (AES-256-GCM). Implements Issue 5.
+ * are stored encrypted (AES-256-GCM). Supports multi-account management.
  */
 @Entity
 @Table(name = "instagram_accounts",
@@ -36,6 +36,19 @@ public class InstagramAccount {
     @Column(name = "account_name", nullable = false)
     private String accountName;
 
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "profile_picture", length = 1000)
+    private String profilePicture;
+
+    @Column(name = "account_type")
+    @Builder.Default
+    private String accountType = "BUSINESS";
+
     @Column(name = "ig_user_id", nullable = false)
     private String igUserId;
 
@@ -52,8 +65,29 @@ public class InstagramAccount {
     @Builder.Default
     private Boolean isActive = true;
 
+    @Column(name = "is_default", nullable = false)
+    @Builder.Default
+    private Boolean isDefault = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "connection_status", nullable = false)
+    @Builder.Default
+    private ConnectionStatus connectionStatus = ConnectionStatus.CONNECTED;
+
     @Column(name = "token_expires_at")
     private Instant tokenExpiresAt;
+
+    @Column(name = "last_synced_at")
+    private Instant lastSyncedAt;
+
+    @Column(name = "last_successful_sync")
+    private Instant lastSuccessfulSync;
+
+    @Column(name = "last_failed_sync")
+    private Instant lastFailedSync;
+
+    @Column(name = "sync_error_message", length = 2000)
+    private String syncErrorMessage;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -62,4 +96,11 @@ public class InstagramAccount {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    public enum ConnectionStatus {
+        CONNECTED,
+        DISCONNECTED,
+        ERROR,
+        SYNCING
+    }
 }

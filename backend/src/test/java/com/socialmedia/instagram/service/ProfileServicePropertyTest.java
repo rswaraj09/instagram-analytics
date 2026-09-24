@@ -6,7 +6,6 @@ import com.socialmedia.instagram.repository.InstagramProfileRepository;
 import net.jqwik.api.*;
 import net.jqwik.api.lifecycle.BeforeTry;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,14 +25,12 @@ import static org.mockito.Mockito.*;
 class ProfileServicePropertyTest {
 
     private InstagramProfileRepository profileRepository;
-    private GraphApiService graphApiService;
     private ProfileService profileService;
 
     @BeforeTry
     void setup() {
         profileRepository = mock(InstagramProfileRepository.class);
-        graphApiService = mock(GraphApiService.class);
-        profileService = new ProfileService(profileRepository, graphApiService);
+        profileService = new ProfileService(profileRepository);
     }
 
     /**

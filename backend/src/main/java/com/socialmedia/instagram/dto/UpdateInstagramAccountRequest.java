@@ -6,9 +6,14 @@ import java.time.Instant;
 
 public record UpdateInstagramAccountRequest(
     @Size(max = 255) String accountName,
+    @Size(max = 255) String username,
+    @Size(max = 255) String displayName,
+    @Size(max = 1000) String profilePicture,
+    @Size(max = 50) String accountType,
     @Size(max = 255) String appId,
     @Size(max = 1000) String appSecret,
     @Size(max = 2000) String accessToken,
     Boolean isActive,
+    Boolean isDefault,
     Instant tokenExpiresAt
 ) {}

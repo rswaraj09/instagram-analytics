@@ -1,6 +1,5 @@
 package com.socialmedia.instagram.controller;
 
-import com.socialmedia.instagram.dto.MediaItem;
 import com.socialmedia.instagram.service.ContentSyncService;
 import com.socialmedia.instagram.service.InstagramAccountService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class GrowthAnalyticsController {
 
         try {
             var creds = credsOpt.get();
-            List<MediaItem> media = contentSyncService.syncAllMedia(creds.igUserId(), creds.accessToken(), 200);
+            contentSyncService.syncAllMedia(creds.igUserId(), creds.accessToken(), 200);
 
             // Generate daily historical growth timeline based on synced content metrics
             List<Map<String, Object>> dailyGrowth = new ArrayList<>();

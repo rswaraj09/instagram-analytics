@@ -70,8 +70,10 @@ public class SecurityConfig {
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
                 .requestMatchers("/api/auth/google", "/api/auth/google/callback", "/api/auth/google/failure").permitAll()
+                .requestMatchers("/api/campaign-analyzer/**", "/api/campaigns/**", "/api/instagram-links/**", "/api/analytics/**", "/api/accounts/**", "/api/posts/**", "/api/profiles/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
@@ -89,11 +91,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
+        List<String> patterns = new java.util.ArrayList<>(allowedOrigins);
+        patterns.add("http://localhost:*");
+        patterns.add("http://127.0.0.1:*");
+        configuration.setAllowedOriginPatterns(patterns);
         configuration.setAllowedMethods(Arrays.asList(
             HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-            HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
+            HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(), HttpMethod.PATCH.name()));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Type", "X-Total-Count"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

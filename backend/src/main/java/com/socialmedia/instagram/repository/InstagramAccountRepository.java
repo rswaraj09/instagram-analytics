@@ -17,9 +17,17 @@ public interface InstagramAccountRepository extends JpaRepository<InstagramAccou
 
     List<InstagramAccount> findByUser_IdOrderByCreatedAtDesc(UUID userId);
 
+    List<InstagramAccount> findByUser_IdOrderByIsDefaultDescCreatedAtDesc(UUID userId);
+
     Optional<InstagramAccount> findByIdAndUser_Id(UUID id, UUID userId);
 
     Optional<InstagramAccount> findFirstByUser_IdAndIsActiveTrueOrderByCreatedAtAsc(UUID userId);
 
+    List<InstagramAccount> findByUser_IdOrderByCreatedAtAsc(UUID userId);
+
+    Optional<InstagramAccount> findByUser_IdAndIsDefaultTrue(UUID userId);
+
     boolean existsByUser_IdAndIgUserId(UUID userId, String igUserId);
+
+    long countByUser_Id(UUID userId);
 }

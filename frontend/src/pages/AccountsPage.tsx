@@ -1,359 +1,431 @@
-import React, { useEffect, useState } from 'react';
-import {
-  getAccounts,
-  createAccount,
-  updateAccount,
-  deleteAccount,
-  testCredentials,
-  type InstagramAccount,
-  type AccountPayload,
-} from '../api/apiClient';
+import React, { useState } from 'react';
+import { useAccount } from '../context/AccountContext';
+import type { InstagramAccount } from '../api/accountApi';
 
-interface FormState {
-  accountName: string;
-  appId: string;
-  appSecret: string;
-  accessToken: string;
-  tokenExpiresAt: string;
-  isActive: boolean;
-}
+export const AccountsPage: React.FC = () => {
+  const {
+    accounts,
+    isLoading,
+    error,
+    createAccount,
+    setDefaultAccount,
+    syncAccount,
+    disconnectAccount,
+    deleteAccount,
+    renameAccountLabel,
+    selectAccount,
+  } = useAccount();
 
-const emptyForm: FormState = {
-  accountName: '',
-  appId: '',
-  appSecret: '',
-  accessToken: '',
-  tokenExpiresAt: '',
-  isActive: true,
-};
+  // Modal States
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [targetAccount, setTargetAccount] = useState<InstagramAccount | null>(null);
+  const [renameInput, setRenameInput] = useState('');
 
-const getToken = () => localStorage.getItem('token') || '';
+  // Add Account Form State
+  const [addForm, setAddForm] = useState({
+    accountName: '',
+    username: '',
+    displayName: '',
+    appId: '10928374829104',
+    appSecret: 'app_sec_demo_98234190',
+    accessToken: 'EAACEdEose0cBA1923849182390182390123890123890',
+    isDefault: false,
+  });
 
-const AccountsPage: React.FC = () => {
-  const [accounts, setAccounts] = useState<InstagramAccount[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editing, setEditing] = useState<InstagramAccount | null>(null);
-  const [form, setForm] = useState<FormState>(emptyForm);
-  const [submitting, setSubmitting] = useState(false);
-  const [revealed, setRevealed] = useState<Record<string, boolean>>({});
-  const [testing, setTesting] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const load = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await getAccounts(getToken());
-      setAccounts(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load accounts');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    load();
-  }, []);
-
-  const openCreate = () => {
-    setEditing(null);
-    setForm(emptyForm);
-    setDialogOpen(true);
-  };
-
-  const openEdit = (acc: InstagramAccount) => {
-    setEditing(acc);
-    setForm({
-      accountName: acc.accountName || '',
-      appId: acc.appId || '',
-      appSecret: '',
-      accessToken: '',
-      tokenExpiresAt: acc.tokenExpiresAt ? acc.tokenExpiresAt.substring(0, 10) : '',
-      isActive: acc.isActive,
-    });
-    setDialogOpen(true);
-  };
-
-  const closeDialog = () => {
-    setDialogOpen(false);
-    setEditing(null);
-    setForm(emptyForm);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
-    setError('');
-    setSuccess('');
+    setFormError(null);
+    if (!addForm.accountName.trim()) {
+      setFormError('Account name is required');
+      return;
+    }
     try {
-      const expires = form.tokenExpiresAt ? new Date(form.tokenExpiresAt).toISOString() : null;
-      if (editing) {
-        const payload: AccountPayload = {
-          accountName: form.accountName,
-          appId: form.appId || undefined,
-          appSecret: form.appSecret || undefined,
-          accessToken: form.accessToken || undefined,
-          isActive: form.isActive,
-          tokenExpiresAt: expires,
-        };
-        await updateAccount(editing.id, payload, getToken());
-        setSuccess('Account updated successfully.');
-      } else {
-        const payload: AccountPayload = {
-          accountName: form.accountName,
-          appId: form.appId,
-          appSecret: form.appSecret,
-          accessToken: form.accessToken,
-          tokenExpiresAt: expires,
-        };
-        await createAccount(payload, getToken());
-        setSuccess('Account created successfully.');
-      }
-      closeDialog();
-      load();
+      setIsSubmitting(true);
+      await createAccount({
+        accountName: addForm.accountName,
+        username: addForm.username || addForm.accountName.toLowerCase().replace(/\s+/g, '_'),
+        displayName: addForm.displayName || addForm.accountName,
+        appId: addForm.appId,
+        appSecret: addForm.appSecret,
+        accessToken: addForm.accessToken,
+        isDefault: addForm.isDefault,
+      });
+      setIsAddModalOpen(false);
+      setAddForm({
+        accountName: '',
+        username: '',
+        displayName: '',
+        appId: '10928374829104',
+        appSecret: 'app_sec_demo_98234190',
+        accessToken: 'EAACEdEose0cBA1923849182390182390123890123890',
+        isDefault: false,
+      });
     } catch (err: any) {
-      setError(err.message || 'Failed to save account');
+      setFormError(err.message || 'Failed to connect Instagram account');
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (acc: InstagramAccount) => {
-    if (!window.confirm(`Delete account "${acc.accountName}"? This cannot be undone.`)) return;
-    setError('');
-    setSuccess('');
-    try {
-      await deleteAccount(acc.id, getToken());
-      setSuccess('Account deleted.');
-      load();
-    } catch (err: any) {
-      setError(err.message || 'Failed to delete account');
+  const handleRenameSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (targetAccount && renameInput.trim()) {
+      await renameAccountLabel(targetAccount.id, renameInput.trim());
+      setIsRenameModalOpen(false);
+      setTargetAccount(null);
     }
   };
-
-  const handleTest = async (acc: InstagramAccount) => {
-    setTesting(acc.id);
-    setError('');
-    setSuccess('');
-    try {
-      const result = await testCredentials(acc.id, getToken());
-      const valid = result?.valid ?? result?.isValid;
-      if (valid === false) {
-        setError(`Credentials for "${acc.accountName}" are invalid${result?.message ? ': ' + result.message : '.'}`);
-      } else {
-        setSuccess(`Credentials for "${acc.accountName}" are valid.`);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to test credentials');
-    } finally {
-      setTesting(null);
-    }
-  };
-
-  const isExpired = (acc: InstagramAccount) =>
-    acc.tokenExpiresAt ? new Date(acc.tokenExpiresAt).getTime() < Date.now() : false;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-8 space-y-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 p-6 rounded-3xl shadow-2xl">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Instagram Accounts</h1>
-          <p className="text-gray-500 mt-1">Manage the Graph API credentials used to fetch analytics</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+              Instagram Accounts
+            </h1>
+            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">
+              {accounts.length} Connected
+            </span>
+          </div>
+          <p className="text-slate-400 text-sm mt-1">
+            Connect, monitor, and switch seamlessly between your Instagram profiles & brand channels.
+          </p>
         </div>
+
         <button
-          onClick={openCreate}
-          className="px-5 py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-md transition-all"
+          onClick={() => setIsAddModalOpen(true)}
+          className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold text-sm shadow-xl shadow-violet-600/20 transition-all hover:scale-[1.02]"
         >
-          + Add Account
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Connect New Account</span>
         </button>
       </div>
 
+      {/* Loading & Error States */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-16">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-500"></div>
+        </div>
+      )}
+
       {error && (
-        <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg">{error}</div>
-      )}
-      {success && (
-        <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 rounded-r-lg">{success}</div>
+        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-300 text-sm">
+          {error}
+        </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-        </div>
-      ) : accounts.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 text-gray-400">
-          No Instagram accounts yet. Click "Add Account" to connect your first set of Graph API credentials.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Account Grid */}
+      {!isLoading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {accounts.map((acc) => (
-            <div key={acc.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">{acc.accountName}</h3>
-                  <p className="text-sm text-gray-400">IG Business ID: {acc.igUserId}</p>
+            <div
+              key={acc.id}
+              className={`relative bg-slate-900/80 border rounded-3xl p-6 transition-all duration-200 flex flex-col justify-between shadow-xl ${
+                acc.isDefault
+                  ? 'border-violet-500/50 shadow-violet-900/10 ring-1 ring-violet-500/20'
+                  : 'border-slate-800/80 hover:border-slate-700'
+              }`}
+            >
+              <div>
+                {/* Header Row */}
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 to-fuchsia-600 p-0.5 shadow-md">
+                      <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+                        {acc.profilePicture ? (
+                          <img src={acc.profilePicture} alt={acc.username} className="w-full h-full object-cover" />
+                        ) : (
+                          (acc.username?.[0] || 'I').toUpperCase()
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-base flex items-center gap-2">
+                        @{acc.username || acc.accountName}
+                        {acc.isDefault && (
+                          <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md font-semibold">
+                            Default
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-xs text-slate-400">{acc.displayName || acc.accountName}</p>
+                    </div>
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800/90 border border-slate-700">
+                    {acc.connectionStatus === 'CONNECTED' && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span className="text-emerald-300 text-[11px]">Synced</span>
+                      </>
+                    )}
+                    {acc.connectionStatus === 'SYNCING' && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span className="text-amber-300 text-[11px]">Syncing</span>
+                      </>
+                    )}
+                    {acc.connectionStatus === 'DISCONNECTED' && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+                        <span className="text-slate-400 text-[11px]">Offline</span>
+                      </>
+                    )}
+                    {acc.connectionStatus === 'ERROR' && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                        <span className="text-rose-300 text-[11px]">Error</span>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                    acc.isActive
-                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                      : 'bg-gray-100 text-gray-500 border border-gray-200'
-                  }`}
-                >
-                  {acc.isActive ? 'Active' : 'Inactive'}
-                </span>
+
+                {/* Dashboard Account Metrics */}
+                <div className="grid grid-cols-3 gap-2 py-3 px-3 bg-slate-950/60 rounded-2xl border border-slate-800/60 mb-4">
+                  <div className="text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Followers</span>
+                    <span className="text-sm font-bold text-white">
+                      {(acc.followers / 1000).toFixed(1)}k
+                    </span>
+                  </div>
+                  <div className="text-center border-x border-slate-800">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Reach</span>
+                    <span className="text-sm font-bold text-white">
+                      {(acc.reach / 1000).toFixed(1)}k
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">ER Rate</span>
+                    <span className="text-sm font-bold text-emerald-400">
+                      {acc.engagementRate?.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Extra Stats */}
+                <div className="flex items-center justify-between text-xs text-slate-400 px-1 mb-4">
+                  <span>Posts: <strong className="text-slate-200">{acc.posts}</strong></span>
+                  <span>Reels: <strong className="text-slate-200">{acc.reels}</strong></span>
+                  <span>Growth: <strong className="text-emerald-400">+{acc.followerGrowth}</strong></span>
+                </div>
               </div>
 
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">App ID</span>
-                  <span className="font-mono text-gray-700">{acc.appId || '\u2014'}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">App Secret</span>
-                  <span className="font-mono text-gray-700">
-                    {revealed[acc.id] ? acc.appSecret : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Access Token</span>
-                  <span className="font-mono text-gray-700 truncate max-w-[55%] text-right">
-                    {revealed[acc.id] ? acc.accessToken : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Token expiry</span>
-                  <span className={isExpired(acc) ? 'text-red-600 font-semibold' : 'text-gray-700'}>
-                    {acc.tokenExpiresAt ? new Date(acc.tokenExpiresAt).toLocaleDateString() : 'No expiry'}
-                    {isExpired(acc) ? ' (expired)' : ''}
-                  </span>
-                </div>
-              </div>
+              {/* Card Footer Actions */}
+              <div className="pt-3 border-t border-slate-800/80 flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      selectAccount(acc.id);
+                    }}
+                    className="flex-1 py-2 px-3 rounded-xl bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 text-xs font-semibold transition-all text-center"
+                  >
+                    View Analytics
+                  </button>
 
-              <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-50">
-                <button
-                  onClick={() => setRevealed((r) => ({ ...r, [acc.id]: !r[acc.id] }))}
-                  className="text-sm font-medium text-gray-500 hover:text-gray-800"
-                >
-                  {revealed[acc.id] ? 'Hide secrets' : 'Show secrets'}
-                </button>
-                <button
-                  onClick={() => handleTest(acc)}
-                  disabled={testing === acc.id}
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-800 disabled:text-indigo-300"
-                >
-                  {testing === acc.id ? 'Testing...' : 'Test credentials'}
-                </button>
-                <button
-                  onClick={() => openEdit(acc)}
-                  className="text-sm font-medium text-purple-600 hover:text-purple-800 ml-auto"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(acc)}
-                  className="text-sm font-medium text-red-500 hover:text-red-700"
-                >
-                  Delete
-                </button>
+                  <button
+                    onClick={() => syncAccount(acc.id)}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"
+                    title="Refresh / Sync Account"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setTargetAccount(acc);
+                      setRenameInput(acc.displayName || acc.accountName);
+                      setIsRenameModalOpen(true);
+                    }}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"
+                    title="Rename Label"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] pt-1">
+                  {!acc.isDefault && (
+                    <button
+                      onClick={() => setDefaultAccount(acc.id)}
+                      className="text-slate-400 hover:text-amber-300 transition-colors"
+                    >
+                      Set Default
+                    </button>
+                  )}
+                  {acc.connectionStatus === 'CONNECTED' ? (
+                    <button
+                      onClick={() => disconnectAccount(acc.id)}
+                      className="text-slate-400 hover:text-amber-400 transition-colors"
+                    >
+                      Disconnect
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => syncAccount(acc.id)}
+                      className="text-emerald-400 hover:underline"
+                    >
+                      Reconnect
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      if (confirm(`Remove @${acc.username} from your account?`)) {
+                        deleteAccount(acc.id);
+                      }
+                    }}
+                    className="text-rose-400 hover:text-rose-300 transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {dialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-900">{editing ? 'Edit Account' : 'Add Account'}</h2>
-              <button onClick={closeDialog} className="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
+      {/* Modal: Connect Instagram Account */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 w-full max-w-md shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-white">Connect Instagram Account</h2>
+              <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-white">
+                ✕
+              </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+
+            {formError && (
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs">
+                {formError}
+              </div>
+            )}
+
+            <form onSubmit={handleAddSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Account name</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Account Label / Brand Name *</label>
                 <input
                   type="text"
+                  placeholder="e.g. Brand Official"
+                  value={addForm.accountName}
+                  onChange={(e) => setAddForm({ ...addForm, accountName: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={form.accountName}
-                  onChange={(e) => setForm({ ...form, accountName: e.target.value })}
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">App ID</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Instagram Handle / Username</label>
                 <input
                   type="text"
-                  required={!editing}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={form.appId}
-                  onChange={(e) => setForm({ ...form, appId: e.target.value })}
+                  placeholder="e.g. brand_official"
+                  value={addForm.username}
+                  onChange={(e) => setAddForm({ ...addForm, username: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  App Secret {editing && <span className="text-gray-400 font-normal">(leave blank to keep current)</span>}
-                </label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">App ID</label>
+                <input
+                  type="text"
+                  value={addForm.appId}
+                  onChange={(e) => setAddForm({ ...addForm, appId: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">App Secret (AES-256 Encrypted)</label>
                 <input
                   type="password"
-                  required={!editing}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={form.appSecret}
-                  onChange={(e) => setForm({ ...form, appSecret: e.target.value })}
+                  value={addForm.appSecret}
+                  onChange={(e) => setAddForm({ ...addForm, appSecret: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Access Token {editing && <span className="text-gray-400 font-normal">(leave blank to keep current)</span>}
-                </label>
-                <input
-                  type="password"
-                  required={!editing}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={form.accessToken}
-                  onChange={(e) => setForm({ ...form, accessToken: e.target.value })}
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Graph API Access Token</label>
+                <textarea
+                  rows={2}
+                  value={addForm.accessToken}
+                  onChange={(e) => setAddForm({ ...addForm, accessToken: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Token expiry (optional)</label>
+
+              <div className="flex items-center gap-2">
                 <input
-                  type="date"
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={form.tokenExpiresAt}
-                  onChange={(e) => setForm({ ...form, tokenExpiresAt: e.target.value })}
+                  type="checkbox"
+                  id="setAsDefaultCheck"
+                  checked={addForm.isDefault}
+                  onChange={(e) => setAddForm({ ...addForm, isDefault: e.target.checked })}
+                  className="rounded border-slate-800 bg-slate-950 text-violet-600 focus:ring-violet-500"
                 />
+                <label htmlFor="setAsDefaultCheck" className="text-xs text-slate-300">Set as default account</label>
               </div>
-              {editing && (
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={form.isActive}
-                    onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                  />
-                  Active
-                </label>
-              )}
-              <div className="flex gap-3 pt-2">
+
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={closeDialog}
-                  className="flex-1 py-2.5 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className={`flex-1 py-2.5 rounded-lg font-semibold text-white transition-all ${
-                    submitting
-                      ? 'bg-purple-300 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
-                  }`}
+                  disabled={isSubmitting}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-xs font-semibold shadow-lg shadow-violet-600/20"
                 >
-                  {submitting ? 'Saving...' : editing ? 'Save changes' : 'Create account'}
+                  {isSubmitting ? 'Connecting...' : 'Connect Account'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Rename Label */}
+      {isRenameModalOpen && targetAccount && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-white">Rename Account Label</h3>
+            <form onSubmit={handleRenameSubmit} className="space-y-4">
+              <input
+                type="text"
+                value={renameInput}
+                onChange={(e) => setRenameInput(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-violet-500 focus:outline-none"
+                required
+              />
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsRenameModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-semibold"
+                >
+                  Save Label
                 </button>
               </div>
             </form>
@@ -363,5 +435,3 @@ const AccountsPage: React.FC = () => {
     </div>
   );
 };
-
-export default AccountsPage;

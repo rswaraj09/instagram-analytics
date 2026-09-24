@@ -55,6 +55,7 @@ class JwtTokenProviderPropertyTest {
         
         // Record the time after token generation
         Instant afterGeneration = Instant.now();
+        assertThat(afterGeneration).isAfterOrEqualTo(beforeGeneration);
         
         // Verify both tokens are non-null and non-empty
         assertThat(accessToken).isNotNull().isNotEmpty();

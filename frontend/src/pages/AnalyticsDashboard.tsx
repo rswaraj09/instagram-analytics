@@ -7,7 +7,7 @@ import {
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
   getAllMedia, getDashboardSummary, compareMedia, exportAnalyticsCsv,
-  exportToExcel, exportToPdf,
+  exportToExcel, exportToPdf, getAuthToken,
   type MediaItem, type DashboardSummary,
 } from '../api/apiClient';
 import AccountSelector from '../components/AccountSelector';
@@ -16,20 +16,20 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 const SORT_OPTIONS = [
-  { value: 'newest',      label: '🕐 Newest First' },
-  { value: 'oldest',      label: '📅 Oldest First' },
-  { value: 'likes',       label: '❤️ Most Liked' },
-  { value: 'views',       label: '👁️ Most Viewed' },
-  { value: 'comments',    label: '💬 Most Comments' },
-  { value: 'shares',      label: '🔗 Most Shared' },
-  { value: 'saves',       label: '🔖 Most Saved' },
-  { value: 'reach',       label: '📡 Highest Reach' },
+  { value: 'newest', label: '🕐 Newest First' },
+  { value: 'oldest', label: '📅 Oldest First' },
+  { value: 'likes', label: '❤️ Most Liked' },
+  { value: 'views', label: '👁️ Most Viewed' },
+  { value: 'comments', label: '💬 Most Comments' },
+  { value: 'shares', label: '🔗 Most Shared' },
+  { value: 'saves', label: '🔖 Most Saved' },
+  { value: 'reach', label: '📡 Highest Reach' },
   { value: 'impressions', label: '🌟 Most Impressions' },
-  { value: 'engagement',  label: '🔥 Best Engagement' },
+  { value: 'engagement', label: '🔥 Best Engagement' },
 ];
 
 const TYPE_OPTIONS = [
-  { value: '',      label: 'All Types' },
+  { value: '', label: 'All Types' },
   { value: 'REELS', label: '🎬 Reels' },
   { value: 'IMAGE', label: '🖼️ Images' },
   { value: 'VIDEO', label: '📹 Videos' },
@@ -55,8 +55,8 @@ const fmt = (n: number | null | undefined) =>
   n == null ? '—' : n >= 1_000_000
     ? `${(n / 1_000_000).toFixed(1)}M`
     : n >= 1_000
-    ? `${(n / 1_000).toFixed(1)}K`
-    : n.toLocaleString();
+      ? `${(n / 1_000).toFixed(1)}K`
+      : n.toLocaleString();
 
 const pct = (n: number | null | undefined) =>
   n == null ? '—' : `${n.toFixed(2)}%`;
@@ -81,11 +81,10 @@ const StatCard: React.FC<{
   title: string; value: string | number; icon: string;
   color: string; sub?: string; highlight?: boolean;
 }> = ({ title, value, icon, color, sub, highlight }) => (
-  <div className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-200 hover:shadow-lg ${
-    highlight
+  <div className={`relative overflow-hidden rounded-2xl p-5 border transition-all duration-200 hover:shadow-lg ${highlight
       ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white border-transparent shadow-lg shadow-violet-200'
       : 'bg-white border-gray-100 hover:border-violet-200'
-  }`}>
+    }`}>
     <div className="flex items-start justify-between">
       <div>
         <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${highlight ? 'text-violet-200' : 'text-gray-400'}`}>
@@ -94,9 +93,8 @@ const StatCard: React.FC<{
         <p className={`text-2xl font-extrabold ${highlight ? 'text-white' : 'text-gray-900'}`}>{value}</p>
         {sub && <p className={`text-xs mt-1 ${highlight ? 'text-violet-200' : 'text-gray-400'}`}>{sub}</p>}
       </div>
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl ${
-        highlight ? 'bg-white/20' : `bg-${color}-50`
-      }`}>
+      <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl ${highlight ? 'bg-white/20' : `bg-${color}-50`
+        }`}>
         {icon}
       </div>
     </div>
@@ -118,11 +116,10 @@ const MediaCard: React.FC<{
   return (
     <div
       onClick={() => compareMode && onSelect?.(item.id)}
-      className={`group bg-white rounded-2xl border overflow-hidden transition-all duration-200 hover:shadow-xl cursor-pointer ${
-        selected
+      className={`group bg-white rounded-2xl border overflow-hidden transition-all duration-200 hover:shadow-xl cursor-pointer ${selected
           ? 'border-violet-500 ring-2 ring-violet-300 shadow-lg'
           : 'border-gray-100 hover:border-violet-200'
-      } ${compareMode ? 'hover:scale-[1.01]' : ''}`}
+        } ${compareMode ? 'hover:scale-[1.01]' : ''}`}
     >
       {/* Thumbnail */}
       <div className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
@@ -139,18 +136,16 @@ const MediaCard: React.FC<{
         )}
         {/* Type badge */}
         <div className="absolute top-2 left-2">
-          <span className={`px-2 py-0.5 rounded-full text-xs font-bold backdrop-blur text-white ${
-            isReel ? 'bg-violet-600/90' : 'bg-gray-800/80'
-          }`}>
+          <span className={`px-2 py-0.5 rounded-full text-xs font-bold backdrop-blur text-white ${isReel ? 'bg-violet-600/90' : 'bg-gray-800/80'
+            }`}>
             {typeEmoji(item.mediaType, item.mediaProductType)}{' '}
             {isReel ? 'Reel' : item.mediaType}
           </span>
         </div>
         {/* Compare checkbox */}
         {compareMode && (
-          <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-            selected ? 'bg-violet-600 border-violet-600 text-white' : 'bg-white/80 border-gray-300'
-          }`}>
+          <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selected ? 'bg-violet-600 border-violet-600 text-white' : 'bg-white/80 border-gray-300'
+            }`}>
             {selected && <span className="text-xs">✓</span>}
           </div>
         )}
@@ -239,12 +234,11 @@ const AnalyticsDashboard: React.FC = () => {
   const exportRef = useRef<HTMLDivElement>(null);
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const token = localStorage.getItem('token') ?? '';
+  const token = getAuthToken();
 
   // ── Data fetching ────────────────────────────────────────────────────────────
 
   const fetchMedia = useCallback(async (pg = 0) => {
-    if (!token) return;
     setLoading(true);
     setError(null);
     try {
@@ -272,7 +266,6 @@ const AnalyticsDashboard: React.FC = () => {
   }, [token, selectedAccountId, typeFilter, search, sortBy, dateFrom, dateTo]);
 
   const fetchSummary = useCallback(async () => {
-    if (!token) return;
     setSummaryLoading(true);
     try {
       const result = await getDashboardSummary(token, selectedAccountId || undefined);
@@ -451,9 +444,9 @@ const AnalyticsDashboard: React.FC = () => {
 
   const TABS: { id: Tab; label: string; icon: string }[] = [
     { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'content',  label: 'Content',  icon: '🎬' },
-    { id: 'charts',   label: 'Charts',   icon: '📈' },
-    { id: 'compare',  label: 'Compare',  icon: '⚖️' },
+    { id: 'content', label: 'Content', icon: '🎬' },
+    { id: 'charts', label: 'Charts', icon: '📈' },
+    { id: 'compare', label: 'Compare', icon: '⚖️' },
   ];
 
   // ── Render ───────────────────────────────────────────────────────────────────
@@ -542,11 +535,10 @@ const AnalyticsDashboard: React.FC = () => {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
-                tab === t.id
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${tab === t.id
                   ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               {t.icon} {t.label}
             </button>
@@ -733,9 +725,8 @@ const AnalyticsDashboard: React.FC = () => {
                 {compareIds.size > 0 && ' • Click to select for comparison'}
               </p>
               <label className="text-xs text-gray-400 flex items-center gap-1.5 cursor-pointer">
-                <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
-                  compareIds.size > 0 ? 'bg-violet-600 border-violet-600 text-white' : 'border-gray-300'
-                }`}>
+                <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${compareIds.size > 0 ? 'bg-violet-600 border-violet-600 text-white' : 'border-gray-300'
+                  }`}>
                   {compareIds.size > 0 && '✓'}
                 </span>
                 Compare mode {compareIds.size > 0 ? 'ON' : 'OFF'}
@@ -793,15 +784,14 @@ const AnalyticsDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* Metric selector */}
             <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-wrap gap-2 shadow-sm">
-              {(['views','likes','comments','shares','saves','reach','impressions','engagementRate'] as const).map(m => (
+              {(['views', 'likes', 'comments', 'shares', 'saves', 'reach', 'impressions', 'engagementRate'] as const).map(m => (
                 <button
                   key={m}
                   onClick={() => setChartMetric(m)}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    chartMetric === m
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${chartMetric === m
                       ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                  }`}
+                    }`}
                 >
                   {m.charAt(0).toUpperCase() + m.slice(1)}
                 </button>
@@ -875,7 +865,7 @@ const AnalyticsDashboard: React.FC = () => {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-gray-400 text-xs uppercase tracking-wider border-b border-gray-100">
-                        {['Date','Views','Likes','Comments','Shares','Saves','Reach','Impressions','Eng. Rate'].map(h => (
+                        {['Date', 'Views', 'Likes', 'Comments', 'Shares', 'Saves', 'Reach', 'Impressions', 'Eng. Rate'].map(h => (
                           <th key={h} className="py-3 px-3 text-right first:text-left">{h}</th>
                         ))}
                       </tr>
@@ -959,14 +949,14 @@ const AnalyticsDashboard: React.FC = () => {
                     </thead>
                     <tbody>
                       {[
-                        { label: '❤️ Likes',       key: 'likeCount' as keyof MediaItem },
-                        { label: '💬 Comments',    key: 'commentsCount' as keyof MediaItem },
-                        { label: '👁️ Views',       key: 'videoViews' as keyof MediaItem },
-                        { label: '🎯 Plays',       key: 'plays' as keyof MediaItem },
-                        { label: '📡 Reach',       key: 'reach' as keyof MediaItem },
+                        { label: '❤️ Likes', key: 'likeCount' as keyof MediaItem },
+                        { label: '💬 Comments', key: 'commentsCount' as keyof MediaItem },
+                        { label: '👁️ Views', key: 'videoViews' as keyof MediaItem },
+                        { label: '🎯 Plays', key: 'plays' as keyof MediaItem },
+                        { label: '📡 Reach', key: 'reach' as keyof MediaItem },
                         { label: '🌟 Impressions', key: 'impressions' as keyof MediaItem },
-                        { label: '🔖 Saves',       key: 'saved' as keyof MediaItem },
-                        { label: '🔗 Shares',      key: 'shares' as keyof MediaItem },
+                        { label: '🔖 Saves', key: 'saved' as keyof MediaItem },
+                        { label: '🔗 Shares', key: 'shares' as keyof MediaItem },
                         { label: '👤 Profile Visits', key: 'profileVisits' as keyof MediaItem },
                         { label: '📈 Engagement Rate', key: 'engagementRate' as keyof MediaItem },
                         { label: '⏱️ Avg Watch (s)', key: 'avgWatchTime' as keyof MediaItem },
@@ -982,12 +972,11 @@ const AnalyticsDashboard: React.FC = () => {
                               const display = key === 'engagementRate'
                                 ? pct(v as number | null)
                                 : key === 'avgWatchTime'
-                                ? v != null ? `${(v / 1000).toFixed(1)}s` : '—'
-                                : fmt(v as number | null);
+                                  ? v != null ? `${(v / 1000).toFixed(1)}s` : '—'
+                                  : fmt(v as number | null);
                               return (
-                                <td key={item.id} className={`py-3 px-5 text-right font-semibold ${
-                                  isMax ? 'text-violet-600' : 'text-gray-700'
-                                }`}>
+                                <td key={item.id} className={`py-3 px-5 text-right font-semibold ${isMax ? 'text-violet-600' : 'text-gray-700'
+                                  }`}>
                                   {isMax && '👑 '}{display}
                                 </td>
                               );

@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 public class ProfileService {
 
     private final InstagramProfileRepository profileRepository;
-    private final GraphApiService graphApiService;
 
     // Instagram profile URL pattern: https://www.instagram.com/username/ or https://instagram.com/username
     private static final Pattern PROFILE_URL_PATTERN = Pattern.compile(

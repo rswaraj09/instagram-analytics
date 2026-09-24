@@ -32,25 +32,21 @@ public class ContentSyncService {
     private static final String GRAPH_API_VERSION = "v18.0";
     private static final String GRAPH_API_BASE = "https://graph.facebook.com/" + GRAPH_API_VERSION;
 
-    private static final String MEDIA_FIELDS =
-        "id,shortcode,media_type,media_product_type,caption,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count";
+    private static final String MEDIA_FIELDS = "id,shortcode,media_type,media_product_type,caption,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count";
 
     // Insights available for FEED / CAROUSEL posts
-    private static final String FEED_INSIGHTS =
-        "reach,impressions,saved,profile_visits,video_views";
+    private static final String FEED_INSIGHTS = "reach,impressions,saved,profile_visits,video_views";
 
     // Insights available for REELS
-    private static final String REELS_INSIGHTS =
-        "reach,plays,saved,shares,total_interactions,video_view_total_time,avg_watch_time";
+    private static final String REELS_INSIGHTS = "reach,plays,saved,shares,total_interactions,video_view_total_time,avg_watch_time";
 
     // Insights available for VIDEO posts (non-reel)
-    private static final String VIDEO_INSIGHTS =
-        "reach,impressions,saved,video_views,profile_visits";
+    private static final String VIDEO_INSIGHTS = "reach,impressions,saved,video_views,profile_visits";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(15))
-        .build();
+            .connectTimeout(Duration.ofSeconds(15))
+            .build();
 
     /**
      * Fetch all media items for an account, populated with insights.
@@ -70,9 +66,9 @@ public class ContentSyncService {
         while (url != null) {
             try {
                 HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(30))
-                    .GET().build();
+                        .uri(URI.create(url))
+                        .timeout(Duration.ofSeconds(30))
+                        .GET().build();
 
                 HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
@@ -111,17 +107,18 @@ public class ContentSyncService {
 
     private String buildMediaListUrl(String igUserId, String token, int limit) {
         return String.format("%s/%s/media?fields=%s&limit=%d&access_token=%s",
-            GRAPH_API_BASE,
-            URLEncoder.encode(igUserId, StandardCharsets.UTF_8),
-            URLEncoder.encode(MEDIA_FIELDS, StandardCharsets.UTF_8),
-            limit,
-            URLEncoder.encode(token, StandardCharsets.UTF_8));
+                GRAPH_API_BASE,
+                URLEncoder.encode(igUserId, StandardCharsets.UTF_8),
+                URLEncoder.encode(MEDIA_FIELDS, StandardCharsets.UTF_8),
+                limit,
+                URLEncoder.encode(token, StandardCharsets.UTF_8));
     }
 
     private MediaItem parseMediaNode(JsonNode node, String accessToken) {
         try {
             String id = node.path("id").asText(null);
-            if (id == null) return null;
+            if (id == null)
+                return null;
 
             String shortcode = node.path("shortcode").asText(null);
             String mediaType = node.path("media_type").asText("IMAGE");
@@ -135,7 +132,8 @@ public class ContentSyncService {
             String tsStr = node.path("timestamp").asText(null);
             if (tsStr != null) {
                 try {
-                    // Instagram returns +0000, which ISO_OFFSET_DATE_TIME doesn't like without a colon
+                    // Instagram returns +0000, which ISO_OFFSET_DATE_TIME doesn't like without a
+                    // colon
                     if (tsStr.matches(".*[+-]\\d{4}$")) {
                         tsStr = tsStr.substring(0, tsStr.length() - 2) + ":" + tsStr.substring(tsStr.length() - 2);
                     }
@@ -149,17 +147,17 @@ public class ContentSyncService {
             long commentsCount = node.path("comments_count").asLong(0);
 
             MediaItem.MediaItemBuilder builder = MediaItem.builder()
-                .id(id)
-                .shortcode(shortcode)
-                .mediaType(mediaType)
-                .mediaProductType(mediaProductType)
-                .caption(caption)
-                .mediaUrl(mediaUrl)
-                .thumbnailUrl("VIDEO".equals(mediaType) && thumbnailUrl == null ? mediaUrl : thumbnailUrl)
-                .permalink(permalink)
-                .timestamp(timestamp)
-                .likeCount(likeCount)
-                .commentsCount(commentsCount);
+                    .id(id)
+                    .shortcode(shortcode)
+                    .mediaType(mediaType)
+                    .mediaProductType(mediaProductType)
+                    .caption(caption)
+                    .mediaUrl(mediaUrl)
+                    .thumbnailUrl("VIDEO".equals(mediaType) && thumbnailUrl == null ? mediaUrl : thumbnailUrl)
+                    .permalink(permalink)
+                    .timestamp(timestamp)
+                    .likeCount(likeCount)
+                    .commentsCount(commentsCount);
 
             // Fetch insights for this specific media
             fetchInsights(id, mediaType, mediaProductType, accessToken, builder);
@@ -168,9 +166,10 @@ public class ContentSyncService {
 
             // Compute engagement rate
             long denominator = item.getReach() != null && item.getReach() > 0
-                ? item.getReach() : likeCount * 6;
+                    ? item.getReach()
+                    : likeCount * 6;
             if (denominator > 0) {
-                double eng = ((double)(likeCount + commentsCount)) / denominator * 100.0;
+                double eng = ((double) (likeCount + commentsCount)) / denominator * 100.0;
                 item.setEngagementRate(Math.round(eng * 100.0) / 100.0);
             }
 
@@ -182,7 +181,7 @@ public class ContentSyncService {
     }
 
     private void fetchInsights(String mediaId, String mediaType, String mediaProductType,
-                               String accessToken, MediaItem.MediaItemBuilder builder) {
+            String accessToken, MediaItem.MediaItemBuilder builder) {
         try {
             String metrics;
             if ("REELS".equalsIgnoreCase(mediaProductType)) {
@@ -194,15 +193,15 @@ public class ContentSyncService {
             }
 
             String url = String.format("%s/%s/insights?metric=%s&access_token=%s",
-                GRAPH_API_BASE,
-                URLEncoder.encode(mediaId, StandardCharsets.UTF_8),
-                URLEncoder.encode(metrics, StandardCharsets.UTF_8),
-                URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
+                    GRAPH_API_BASE,
+                    URLEncoder.encode(mediaId, StandardCharsets.UTF_8),
+                    URLEncoder.encode(metrics, StandardCharsets.UTF_8),
+                    URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
 
             HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(20))
-                .GET().build();
+                    .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(20))
+                    .GET().build();
 
             HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
 
@@ -213,7 +212,7 @@ public class ContentSyncService {
                     for (JsonNode metric : data) {
                         String name = metric.path("name").asText();
                         long value = metric.path("values").path(0).path("value").asLong(
-                            metric.path("value").asLong(0));
+                                metric.path("value").asLong(0));
 
                         switch (name) {
                             case "reach" -> builder.reach(value);
@@ -228,7 +227,8 @@ public class ContentSyncService {
                             case "total_interactions" -> builder.totalInteractions(value);
                             case "video_view_total_time" -> builder.videoViewTotalTime(value);
                             case "avg_watch_time" -> builder.avgWatchTime(value);
-                            default -> {}
+                            default -> {
+                            }
                         }
                     }
                 }

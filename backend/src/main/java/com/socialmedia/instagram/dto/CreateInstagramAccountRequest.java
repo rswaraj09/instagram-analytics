@@ -7,10 +7,14 @@ import java.time.Instant;
 
 public record CreateInstagramAccountRequest(
     @NotBlank @Size(max = 255) String accountName,
+    @Size(max = 255) String username,
+    @Size(max = 255) String displayName,
+    @Size(max = 1000) String profilePicture,
+    @Size(max = 50) String accountType,
     @Size(max = 255) String igUserId,
     @NotBlank @Size(max = 255) String appId,
     @NotBlank @Size(max = 1000) String appSecret,
     @NotBlank @Size(max = 2000) String accessToken,
+    Boolean isDefault,
     Instant tokenExpiresAt
 ) {}
-

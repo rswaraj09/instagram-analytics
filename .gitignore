@@ -1,18 +1,48 @@
-.kiro
-AI_AGENT_PROMPT.md
+# IDE and System Files
+.idea/
+.vscode/
+*.swp
+*.DS_Store
+Thumbs.db
+*.zip
 
-node_modules
-.vscode
+# Python & ML Pipeline
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.pkl
+*.joblib
+*.h5
 
+# Node & Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/node_modules/
+.env.local
 
-
-
+# Java & Maven Backend
+backend/target/
+backend/.mvn/
+backend/.classpath
+backend/.project
+backend/.settings/
 backend/debug-screenshot.png
 backend/debug-page.html
 backend/.jqwik-database
-backend/logs
+backend/logs/
 backend/.env
 
-
+# Project specific
+.kiro
+AI_AGENT_PROMPT.md
 test-scraping.bat
 test-scraping.ps1
+compile_log*.txt
+test_log*.txt
+run_output*.txt
+*.log
+
